@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-y3t-pxm=+wej5)elx&edj6ey!b(4wnbj6s#q$q&$4go+6&8j#v
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'https://lifehub-os.onrender.com']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'lifehub-os.onrender.com']
 
 
 # Application definition
