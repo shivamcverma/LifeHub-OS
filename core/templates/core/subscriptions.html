@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<header style="margin-bottom: 2.5rem; display: flex; justify-content: space-between; align-items: center;">
+    <div>
+        <h1>Subscription Tracker</h1>
+        <p class="text-muted">Manage your recurring services and renewal dates.</p>
+    </div>
+    <button class="btn btn-primary" onclick="toggleModal()" style="display: flex; align-items: center;">
+        <i data-lucide="plus-circle" style="width: 18px; margin-right: 0.5rem;"></i>
+        Add Subscription
+    </button>
+</header>
+
+<div class="glass" style="padding: 2.5rem;">
+    {% if subscriptions %}
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;">
+        {% for sub in subscriptions %}
+        <div class="glass" style="padding: 2rem; border: 1px solid var(--glass-border); position: relative; overflow: hidden;">
+            <div style="position: absolute; top: 0; right: 0; padding: 0.5rem 1rem; background: var(--primary); color: white; font-size: 0.75rem; font-weight: 700; border-bottom-left-radius: 12px;">
+                {{ sub.get_billing_cycle_display }}
+            </div>
+            
+            <div style="display: flex; align-items: center; margin-bottom: 1.5rem;">
+                <div style="background: rgba(99, 102, 241, 0.1); padding: 0.75rem; border-radius: 12px; color: var(--primary); margin-right: 1rem;">
+                    <i data-lucide="monitor"></i>
+                </div>
+                <div>
+                    <h3 style="margin-bottom: 0;">{{ sub.service_name }}</h3>
+                    <p class="text-muted" style="font-size: 0.875rem;">Renewal: {{ sub.next_renewal|date:"M d, Y" }}</p>
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                <span class="text-muted" style="font-size: 0.875rem;">Cost</span>
+                <span style="font-size: 1.5rem; font-weight: 700; color: var(--text-main);">₹{{ sub.cost }}</span>
+            </div>
+
+            <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--glass-border); display: flex; justify-content: flex-end; gap: 1rem;">
+                <button class="text-muted" style="background: none; border: none; cursor: pointer;"><i data-lucide="edit-3" style="width: 18px;"></i></button>
+                <button class="text-muted" style="background: none; border: none; cursor: pointer; color: var(--accent-rose);"><i data-lucide="trash-2" style="width: 18px;"></i></button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div style="text-align: center; padding: 4rem 2rem;">
+        <i data-lucide="refresh-cw" style="width: 48px; height: 48px; color: var(--text-muted); margin-bottom: 1rem;"></i>
+        <p class="text-muted">No subscriptions tracked yet. Keep an eye on your recurring bills here.</p>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Modal -->
+<div id="subscriptionModal" class="glass" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 500px; padding: 2.5rem; z-index: 1000; background: var(--bg-dark); border: 2px solid var(--primary);">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <h3>Track New Subscription</h3>
+        <button onclick="toggleModal()" style="background: none; border: none; color: white; cursor: pointer;">
+            <i data-lucide="x"></i>
+        </button>
+    </div>
+    <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="form-group">
+            <label class="text-muted" style="font-size: 0.875rem; display: block; margin-bottom: 0.5rem;">{{ field.label }}</label>
+            {{ field }}
+        </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Add Subscription</button>
+    </form>
+</div>
+
+<div id="overlay" onclick="toggleModal()" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 999;"></div>
+
+<script>
+    function toggleModal() {
+        const modal = document.getElementById('subscriptionModal');
+        const overlay = document.getElementById('overlay');
+        const isHidden = modal.style.display === 'none';
+        modal.style.display = isHidden ? 'block' : 'none';
+        overlay.style.display = isHidden ? 'block' : 'none';
+    }
+</script>
+{% endblock %}

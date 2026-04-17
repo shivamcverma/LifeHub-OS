@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 0 auto; padding-top: 2rem;">
+    <header style="text-align: center; margin-bottom: 4rem;">
+        <div style="background: rgba(244, 63, 94, 0.1); width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 2rem; border: 2px solid var(--accent-rose);">
+            <i data-lucide="shield-alert" style="width: 40px; height: 40px; color: var(--accent-rose);"></i>
+        </div>
+        <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">Emergency Mode</h1>
+        <p class="text-muted" style="font-size: 1.125rem;">Securely share your critical documents with trusted contacts in one click.</p>
+    </header>
+
+    <div class="glass" style="padding: 3rem; border: 2px solid rgba(244, 63, 94, 0.2);">
+        <h3 style="margin-bottom: 1.5rem;">One-Click Secure Share</h3>
+        <p class="text-muted" style="line-height: 1.6; margin-bottom: 2rem;">
+            When activated, LifeHub will generate a **24-hour secure link** containing your pre-selected identity and medical documents. This link can be sent via email to your emergency contacts or shared manually.
+        </p>
+
+        <div style="background: rgba(15, 23, 42, 0.4); padding: 1.5rem; border-radius: 12px; margin-bottom: 2.5rem; border: 1px dashed var(--glass-border);">
+            <div style="display: flex; align-items: center; gap: 1rem; color: var(--accent-blue);">
+                <i data-lucide="info" style="width: 18px;"></i>
+                <p style="font-weight: 600; font-size: 0.95rem;">Security Protocol Active</p>
+            </div>
+            <p class="text-muted" style="font-size: 0.875rem; margin-top: 0.5rem;">Access will require a PIN sent to the recipient's phone (Demo logic).</p>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+            <button class="btn" style="background: var(--accent-rose); color: white; padding: 1.25rem; font-size: 1.125rem; display: flex; align-items: center; justify-content: center;" onclick="alert('Demo: Emergency link generated and sent to contacts!')">
+                <i data-lucide="zap" style="width: 20px; margin-right: 0.75rem;"></i>
+                ACTIVATE NOW
+            </button>
+            <p style="text-align: center; font-size: 0.875rem;" class="text-muted">Once clicked, this action cannot be undone for 24 hours.</p>
+        </div>
+    </div>
+
+    <div style="margin-top: 3rem; display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
+        <div class="glass" style="padding: 1.5rem;">
+            <h4 style="margin-bottom: 0.5rem;">Emergency Contacts</h4>
+            <p class="text-muted" style="font-size: 0.875rem;">Set who receives your secure link.</p>
+            <button class="btn glass" style="margin-top: 1rem; width: 100%; font-size: 0.875rem;">Manage Contacts</button>
+        </div>
+        <div class="glass" style="padding: 1.5rem;">
+            <h4 style="margin-bottom: 0.5rem;">Included Docs</h4>
+            <p class="text-muted" style="font-size: 0.875rem;">Select documents to be shared.</p>
+            <button class="btn glass" style="margin-top: 1rem; width: 100%; font-size: 0.875rem;">Select Documents</button>
+        </div>
+    </div>
+</div>
+{% endblock %}

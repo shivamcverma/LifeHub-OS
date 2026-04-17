@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<header style="margin-bottom: 2.5rem; display: flex; justify-content: space-between; align-items: center;">
+    <div>
+        <h1>Document Locker</h1>
+        <p class="text-muted">Your secure vault for essential documents.</p>
+    </div>
+    <button class="btn btn-primary" onclick="toggleModal()" style="display: flex; align-items: center;">
+        <i data-lucide="plus" style="width: 18px; margin-right: 0.5rem;"></i>
+        Add Document
+    </button>
+</header>
+
+<div class="glass" style="padding: 2rem;">
+    {% if documents %}
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.5rem;">
+        {% for doc in documents %}
+        <div class="glass" style="padding: 1.5rem; position: relative; border: 1px solid var(--glass-border);">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                <div style="background: rgba(56, 189, 248, 0.1); padding: 0.75rem; border-radius: 12px; color: var(--accent-blue);">
+                    <i data-lucide="file-check"></i>
+                </div>
+                <div style="display: flex; gap: 0.5rem;">
+                    <a href="{{ doc.file.url }}" target="_blank" class="text-muted"><i data-lucide="eye" style="width: 18px;"></i></a>
+                    <a href="{{ doc.file.url }}" download class="text-muted"><i data-lucide="download" style="width: 18px;"></i></a>
+                    <form action="{% url 'delete_document' doc.pk %}" method="post" style="display: inline;" onsubmit="return confirm('Delete this document?')">
+                        {% csrf_token %}
+                        <button type="submit" style="background: none; border: none; color: var(--accent-rose); cursor: pointer;">
+                            <i data-lucide="trash-2" style="width: 18px;"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <h4 style="margin-bottom: 0.25rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ doc.title }}</h4>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+                <span class="text-muted" style="font-size: 0.75rem; background: var(--glass-border); padding: 0.25rem 0.5rem; border-radius: 6px;">{{ doc.get_category_display }}</span>
+                <span class="text-muted" style="font-size: 0.75rem;">{{ doc.uploaded_at|date:"M d, Y" }}</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div style="text-align: center; padding: 4rem 2rem;">
+        <i data-lucide="folder-search" style="width: 48px; height: 48px; color: var(--text-muted); margin-bottom: 1rem;"></i>
+        <p class="text-muted">No documents found. Start by uploading your IDs or reports.</p>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Upload Modal (Hidden by default) -->
+<div id="uploadModal" class="glass" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 500px; padding: 2.5rem; z-index: 1000; background: var(--bg-dark); border: 2px solid var(--primary);">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <h3>Upload New Document</h3>
+        <button onclick="toggleModal()" style="background: none; border: none; color: white; cursor: pointer;">
+            <i data-lucide="x"></i>
+        </button>
+    </div>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="form-group">
+            <label class="text-muted" style="font-size: 0.875rem; display: block; margin-bottom: 0.5rem;">{{ field.label }}</label>
+            {{ field }}
+        </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Start Upload</button>
+    </form>
+</div>
+
+<div id="overlay" onclick="toggleModal()" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 999;"></div>
+
+<script>
+    function toggleModal() {
+        const modal = document.getElementById('uploadModal');
+        const overlay = document.getElementById('overlay');
+        const isHidden = modal.style.display === 'none';
+        modal.style.display = isHidden ? 'block' : 'none';
+        overlay.style.display = isHidden ? 'block' : 'none';
+    }
+</script>
+{% endblock %}

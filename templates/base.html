@@ -1,0 +1,82 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LifeHub | MyLife OS</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    {% if user.is_authenticated %}
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar glass">
+            <div class="logo-section" style="margin-bottom: 3rem;">
+                <h1 style="font-size: 1.5rem; color: var(--primary);">LifeHub <span style="font-weight: 400; color: white;">OS</span></h1>
+            </div>
+
+            <nav>
+                <a href="{% url 'dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                    <i data-lucide="layout-dashboard"></i> Dashboard
+                </a>
+                <a href="{% url 'document_list' %}" class="nav-link {% if request.resolver_match.url_name == 'document_list' %}active{% endif %}">
+                    <i data-lucide="folder-lock"></i> Documents
+                </a>
+                <a href="{% url 'expense_list' %}" class="nav-link {% if request.resolver_match.url_name == 'expense_list' %}active{% endif %}">
+                    <i data-lucide="wallet"></i> Expenses
+                </a>
+                <a href="{% url 'reminder_list' %}" class="nav-link {% if request.resolver_match.url_name == 'reminder_list' %}active{% endif %}">
+                    <i data-lucide="bell"></i> Reminders
+                </a>
+                <a href="{% url 'subscription_list' %}" class="nav-link {% if request.resolver_match.url_name == 'subscription_list' %}active{% endif %}">
+                    <i data-lucide="refresh-cw"></i> Subscriptions
+                </a>
+                <hr style="border: none; border-top: 1px solid var(--glass-border); margin: 1.5rem 0;">
+                <a href="{% url 'emergency_mode' %}" class="nav-link" style="color: var(--accent-rose);">
+                    <i data-lucide="alert-triangle"></i> Emergency Mode
+                </a>
+            </nav>
+
+            <div class="user-section" style="position: absolute; bottom: 2rem; width: 210px;">
+                <p class="text-muted" style="margin-bottom: 0.5rem; font-size: 0.875rem;">Logged in as</p>
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <span style="font-weight: 600;">{{ user.username }}</span>
+                    <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" style="background: none; border: none; color: var(--text-muted); cursor: pointer;">
+                            <i data-lucide="log-out" style="width: 18px;"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="message {{ message.tags }} glass">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+    {% else %}
+        {% block auth_content %}{% endblock %}
+    {% endif %}
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

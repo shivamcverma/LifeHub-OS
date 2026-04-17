@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block auth_content %}
+<div class="auth-wrapper">
+    <div class="auth-card glass">
+        <h1 style="text-align: center; color: var(--primary);">Join LifeHub</h1>
+        <p class="text-muted" style="text-align: center; margin-bottom: 2rem;">Secure your life management system</p>
+        
+        <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="form-group">
+                <label class="text-muted" style="font-size: 0.875rem; display: block; margin-bottom: 0.5rem;">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                    <p class="text-rose-500" style="font-size: 0.75rem; margin-top: 0.25rem;">{{ field.errors.0 }}</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Create Account</button>
+        </form>
+
+        <p style="text-align: center; margin-top: 2rem; font-size: 0.875rem;" class="text-muted">
+            Already have an account? <a href="{% url 'login' %}" style="color: var(--primary); text-decoration: none;">Log in</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

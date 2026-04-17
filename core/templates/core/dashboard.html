@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<header style="margin-bottom: 2.5rem; display: flex; justify-content: space-between; align-items: center;">
+    <div>
+        <h1 style="margin-bottom: 0.25rem;">Life Overview</h1>
+        <p class="text-muted">Welcome back, {{ user.username }}. Here's what's happening today.</p>
+    </div>
+    <div class="date-display glass" style="padding: 0.75rem 1.25rem; font-weight: 600; color: var(--primary);">
+        <i data-lucide="calendar" style="width: 18px; vertical-align: middle; margin-right: 0.5rem;"></i>
+        {% now "jS F, Y" %}
+    </div>
+</header>
+
+<div class="dashboard-grid">
+    <!-- Documents Card -->
+    <div class="stat-card glass">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 1.5rem;">
+            <div style="background: rgba(56, 189, 248, 0.1); padding: 0.75rem; border-radius: 12px; color: var(--accent-blue);">
+                <i data-lucide="file-text"></i>
+            </div>
+            <a href="{% url 'document_list' %}" style="color: var(--text-muted); text-decoration: none;"><i data-lucide="external-link" style="width: 18px;"></i></a>
+        </div>
+        <h3 style="color: var(--text-muted); font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem; text-transform: uppercase;">Secured Documents</h3>
+        <p style="font-size: 2.25rem; font-weight: 700;">{{ docs_count }}</p>
+        <p class="text-muted" style="font-size: 0.875rem; margin-top: 0.5rem;">Total items in vault</p>
+    </div>
+
+    <!-- Expenses Card -->
+    <div class="stat-card glass">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 1.5rem;">
+            <div style="background: rgba(16, 185, 129, 0.1); padding: 0.75rem; border-radius: 12px; color: var(--accent-emerald);">
+                <i data-lucide="trending-up"></i>
+            </div>
+            <a href="{% url 'expense_list' %}" style="color: var(--text-muted); text-decoration: none;"><i data-lucide="external-link" style="width: 18px;"></i></a>
+        </div>
+        <h3 style="color: var(--text-muted); font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem; text-transform: uppercase;">Monthly Spending</h3>
+        <p style="font-size: 2.25rem; font-weight: 700;">₹{{ monthly_spending|floatformat:2 }}</p>
+        <p class="text-muted" style="font-size: 0.875rem; margin-top: 0.5rem;">Spent in {% now "F" %}</p>
+    </div>
+
+    <!-- Subscriptions Card -->
+    <div class="stat-card glass">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 1.5rem;">
+            <div style="background: rgba(99, 102, 241, 0.1); padding: 0.75rem; border-radius: 12px; color: var(--primary);">
+                <i data-lucide="credit-card"></i>
+            </div>
+            <a href="{% url 'subscription_list' %}" style="color: var(--text-muted); text-decoration: none;"><i data-lucide="external-link" style="width: 18px;"></i></a>
+        </div>
+        <h3 style="color: var(--text-muted); font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem; text-transform: uppercase;">Active Subs</h3>
+        <p style="font-size: 2.25rem; font-weight: 700;">₹{{ total_sub_cost|floatformat:2 }}</p>
+        <p class="text-muted" style="font-size: 0.875rem; margin-top: 0.5rem;">Total recurring cost</p>
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; margin-top: 2rem;">
+    <!-- Upcoming Reminders -->
+    <div class="glass" style="padding: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h3 style="margin-bottom: 0;">Upcoming Reminders</h3>
+            <a href="{% url 'reminder_list' %}" class="btn glass" style="padding: 0.5rem 1rem; font-size: 0.875rem; text-decoration: none; color: white;">View All</a>
+        </div>
+        
+        {% if upcoming_reminders %}
+            <div class="reminder-list">
+                {% for reminder in upcoming_reminders %}
+                <div style="display: flex; align-items: center; padding: 1rem; border-bottom: 1px solid var(--glass-border);">
+                    <div style="width: 12px; height: 12px; border-radius: 50%; background: {% if reminder.priority == 'H' %}var(--accent-rose){% elif reminder.priority == 'M' %}var(--accent-blue){% else %}var(--text-muted){% endif %}; margin-right: 1.5rem;"></div>
+                    <div style="flex: 1;">
+                        <p style="font-weight: 600;">{{ reminder.title }}</p>
+                        <p class="text-muted" style="font-size: 0.875rem;">{{ reminder.date|date:"M d, Y H:i" }}</p>
+                    </div>
+                    <div style="text-align: right;">
+                        <span class="text-muted" style="font-size: 0.75rem; text-transform: uppercase;">{{ reminder.get_priority_display }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-muted" style="text-align: center; padding: 2rem;">No upcoming reminders. Relax!</p>
+        {% endif %}
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="glass" style="padding: 2rem; background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(30, 41, 59, 0.7) 100%);">
+        <h3 style="margin-bottom: 1.5rem;">Smart Insights</h3>
+        <div style="margin-bottom: 1.5rem;">
+            <p class="text-muted" style="font-size: 0.875rem; margin-bottom: 0.5rem;">Pro Tip</p>
+            <p style="font-size: 0.95rem; line-height: 1.6;">You have **{{ upcoming_reminders|length }}** upcoming events this week. Keep an eye on your expenses to stay within budget.</p>
+        </div>
+        <button class="btn btn-primary" style="width: 100%; display: flex; align-items: center; justify-content: center;" onclick="window.location.href='{% url 'emergency_mode' %}'">
+            <i data-lucide="shield-alert" style="width: 18px; margin-right: 0.5rem;"></i>
+            Activate Emergency Mode
+        </button>
+    </div>
+</div>
+{% endblock %}
